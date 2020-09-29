@@ -119,7 +119,7 @@ class UDPipeTokenizer(object):
             doc = Doc(self.vocab,
                       words=words,
                       spaces=spaces).from_array(attrs, array)
-            Token.set_extension("feats", default="")
+            Token.set_extension("feats", default="", force=True)
             for token, f in zip(doc, feats):
                 token._.feats = f
         except ValueError as e:
