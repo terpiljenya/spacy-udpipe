@@ -6,7 +6,7 @@ import warnings
 import numpy
 from spacy.language import Language
 from spacy.symbols import DEP, HEAD, LEMMA, POS, TAG
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Token
 from spacy.vocab import Vocab
 from ufal.udpipe import Sentence, Word
 
@@ -75,6 +75,7 @@ class UDPipeTokenizer(object):
         pos = []
         tags = []
         deps = []
+        feats = []
         lemmas = []
         offset = 0
         is_aligned = self._check_aligned(text=text, tokens=tokens)
@@ -97,6 +98,7 @@ class UDPipeTokenizer(object):
             pos.append(self.vocab.strings.add(token.upostag or ""))
             # CoNNL xpostag-s, custom for each UD treebank
             tags.append(self.vocab.strings.add(token.xpostag or ""))
+            feats.append(token.feats or "")
             deps.append(self.vocab.strings.add(self._dep(token.deprel) or ""))
             lemmas.append(self.vocab.strings.add(token.lemma or ""))
             offset += len(token.form)
@@ -117,6 +119,9 @@ class UDPipeTokenizer(object):
             doc = Doc(self.vocab,
                       words=words,
                       spaces=spaces).from_array(attrs, array)
+            Token.set_extension("feats", default="")
+            for token, f in zip(doc, feats):
+                token._.feats = f
         except ValueError as e:
             if '[E167]' in str(e):
                 raise ValueError(

@@ -7,6 +7,7 @@ from spacy_udpipe import UDPipeModel, download, load
 
 EN = "en"
 RO = "ro"
+RU = "ru"
 SPACY_VERSION = "2.2.4"
 
 
@@ -64,3 +65,15 @@ def test_morph_exception() -> None:
         doc = nlp(text)
 
     assert doc
+
+
+def test_feats() -> None:
+    lang = RU
+    text = "Я люблю машинное обучение."
+
+    download(lang=lang)
+
+    nlp = load(lang=lang)
+    assert nlp._meta["lang"] == f"udpipe_{lang}"
+    doc = nlp(text)
+    assert doc[2]._.feats == "Case=Acc|Degree=Pos|Gender=Neut|Number=Sing"
