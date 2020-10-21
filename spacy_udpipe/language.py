@@ -34,8 +34,7 @@ class UDPipeTokenizer(object):
     def __init__(
         self,
         model: UDPipeModel,
-        vocab: Vocab,
-        with_parsing: bool = True
+        vocab: Vocab
     ):
         """Initialize the tokenizer.
 
@@ -44,7 +43,6 @@ class UDPipeTokenizer(object):
         """
         self.model = model
         self.vocab = vocab
-        self.with_parsing = with_parsing
 
     def _dep(self, d: str) -> str:
         # Ensure labels match with SpaCy
@@ -56,7 +54,8 @@ class UDPipeTokenizer(object):
             str,
             List[str],
             List[List[str]]
-        ]
+        ],
+        with_parsing: bool =True
     ) -> Doc:
         """Convert input text to a spaCy Doc.
 
@@ -66,7 +65,7 @@ class UDPipeTokenizer(object):
             List[List[str]] : pretokenized text.
         RETURNS: The spaCy Doc object.
         """
-        udpipe_sents = self.model(text=text, with_parsing=self.with_parsing) if text else [Sentence()]
+        udpipe_sents = self.model(text=text, with_parsing=with_parsing) if text else [Sentence()]
         text = " ".join(s.getText() for s in udpipe_sents)
         tokens, heads = self._get_tokens_with_heads(udpipe_sents=udpipe_sents)
         if not tokens:
