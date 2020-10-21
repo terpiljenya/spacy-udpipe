@@ -124,7 +124,8 @@ class UDPipeModel(object):
             str,
             List[str],
             List[List[str]]
-        ]
+        ],
+        with_parsing: bool = True
     ) -> List[Sentence]:
         """Tokenize, tag and parse the text and return it in an UDPipe
         representation.
@@ -138,7 +139,8 @@ class UDPipeModel(object):
         sentences = self.tokenize(text)
         for s in sentences:
             self.tag(s)
-            self.parse(s)
+            if with_parsing:
+                self.parse(s)
         return sentences
 
     def _read(self, text: str, input_format: str) -> List[Sentence]:
